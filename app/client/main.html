@@ -1,0 +1,54 @@
+<head>
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
+  <title>colorsmash</title>
+</head>
+
+<body>
+  {{> handler}}
+</body>
+
+<template name="handler">
+    {{#if startState}}
+        {{> titleScreen}}
+    {{else}}
+      {{#if gameState}}
+        {{> back}}
+        {{> score}}
+        {{> grid}}
+      {{/if}}
+    {{/if}}
+</template>
+
+<template name="score">
+  <div class="score">
+    <p id="score" class="noselect">0</p>
+  </div>
+</template>
+
+<template name="titleScreen">
+  <div class="title">
+    <p class="noselect" id="title1">COLOR</p>
+    <p class="noselect" id="title2">SMASH</p>
+  </div>
+  <button class="startButton noselect" id="startButton">Play</button>
+</template>
+
+<template name="back">
+  <button type="button" class="backButton" aria-label="Left Align">
+    <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+  </button>
+</template>
+
+<template name="grid">
+  <div class="btn-grid">
+    <button class="item" id="0"></button>
+    <button class="item" id="1"></button>
+    <button class="item" id="2"></button>
+    <button class="item" id="3"></button>
+    <button class="item" id="4"></button>
+    <button class="item" id="5"></button>
+    <button class="item" id="6"></button>
+    <button class="item" id="7"></button>
+    <button class="item" id="8"></button>
+  </div>
+</template>
