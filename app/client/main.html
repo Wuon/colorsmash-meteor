@@ -26,10 +26,12 @@
 </template>
 
 <template name="titleScreen">
-  <div class="title">
-    <p class="noselect" id="title1">COLOR</p>
-    <p class="noselect" id="title2">SMASH</p>
-  </div>
+  <p class="noselect title" id="title1">COLOR</p>
+  <p class="noselect subTitle" id="title2">SMASH</p>
+  {{#each getScore}}
+      <p class="highscoreText noselect" id="title3">{{name}}</p>
+      <p class="scoreText noselect" id="title4">{{score}}</p>
+  {{/each}}
   <button class="startButton noselect" id="startButton">Play</button>
 </template>
 

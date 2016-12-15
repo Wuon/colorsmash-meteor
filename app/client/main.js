@@ -8,14 +8,18 @@ var colors = ["#ffb3ba", "#d9b3ff", "#ffbaba", "#baffc9", "#b3bded"];
 var colorCount = 0;
 var buttons = [];
 var gameSpeed;
-var title1Flash, title2Flash, buttonFlash, scoreFlash, borderFlash;
+var title1Flash, title2Flash, buttonFlash, scoreFlash, borderFlash, timeCount;
 var speed;
 var speedCounter;
 var gameState = 0;
 var titleCount1 = 0;
 var titleCount2 = 1;
-var startCount = 2;
-var borderCount = 2;
+var titleCount3 = 2;
+var titleCount4 = 3;
+var startCount = 4;
+var borderCount = 4;
+
+highscore = new Ground.Collection('highscore');
 
 Session.set("gameState", 0);
 
@@ -40,6 +44,7 @@ Meteor.startup(function () {
   } else {
     console.log("No Cordova ");
   }
+  Meteor.subscribe('highscore');
 });
 
 Template.handler.helpers({
@@ -63,6 +68,8 @@ Template.score.onDestroyed(function () {
 Template.titleScreen.onCreated(function scoreOnCreated(){
   title1Flash = setInterval(function(){ document.getElementById("title1").style.color = colors[titleCount1]; titleCount1++; if(titleCount1 >=5){ titleCount1=0;} }, 250);
   title2Flash = setInterval(function(){ document.getElementById("title2").style.color = colors[titleCount2]; titleCount2++; if(titleCount2 >=5){ titleCount2=0;} }, 250);
+  title3Flash = setInterval(function(){ document.getElementById("title3").style.color = colors[titleCount3]; titleCount3++; if(titleCount3 >=5){ titleCount3=0;} }, 250);
+  title4Flash = setInterval(function(){ document.getElementById("title4").style.color = colors[titleCount4]; titleCount4++; if(titleCount4 >=5){ titleCount4=0;} }, 250);
   buttonFlash = setInterval(function(){ document.getElementById("startButton").style.color = colors[startCount]; startCount++; if(startCount >=5){ startCount=0;} }, 250);
   borderFlash = setInterval(function(){ document.getElementById("startButton").style.borderColor = colors[borderCount]; borderCount++; if(borderCount >=5){ borderCount=0;} }, 250);
 });
@@ -73,15 +80,26 @@ Template.titleScreen.events({
   },
 });
 
+Template.titleScreen.helpers({
+  'getScore': function() {
+        return highscore.find();
+      }
+
+});
+
 Template.titleScreen.onDestroyed(function () {
   clearInterval(title1Flash);
   clearInterval(title2Flash);
+  clearInterval(title3Flash);
+  clearInterval(title4Flash);
   clearInterval(buttonFlash);
   clearInterval(borderFlash);
 });
 
 Template.back.events({
   'click .backButton': function(event){
+    clearInterval(gameSpeed);
+    clearInterval(scoreFlash);
     Session.set("gameState", 0);
   },
 });
@@ -174,7 +192,7 @@ function gameLoop(){
       outcome();
     }
     speedCounter++;
-    if(speedCounter == 5){
+    if(speedCounter == 5 && speed >= 500){
       speedCounter = 0;
       speed -= 25;
       clearInterval(gameSpeed);
@@ -183,6 +201,12 @@ function gameLoop(){
   }
 
   function outcome(){
+    var oldScore = highscore.findOne({name: "HIGHSCORE"}).score;
+    var id = highscore.findOne({name: "HIGHSCORE"})._id;
+    if( score > oldScore){
+      highscore.remove(id);
+      highscore.insert({name: "HIGHSCORE", score: score});
+    }
     gameState=1;
   }
 
